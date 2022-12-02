@@ -120,10 +120,11 @@ class TSPSolver:
 						raise Exception("Unable to visit any city!!")
 				
 				solution = TSPSolution(route)
-				count += 1
+				
 				if solution.cost < np.inf:
 					# Found a valid route
 					foundTour = True
+					count += 1
 
 					# Add logic for tracking bssf
 					if bestSolution == None:
