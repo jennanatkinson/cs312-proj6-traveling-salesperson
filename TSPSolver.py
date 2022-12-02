@@ -14,8 +14,6 @@ else:
 import time
 import numpy as np
 from TSPClasses import *
-import heapq
-import itertools
 
 
 
@@ -81,7 +79,6 @@ class TSPSolver:
 		algorithm</returns> 
 	'''
 
-# TODO: revise to try every city as the "start city" and take the best
 	# Returns the first greedy solution found, Time: O(x*n**2)
 	def greedy(self, time_allowance=60.0, startCity=None):
 		# Setup objects
@@ -90,49 +87,59 @@ class TSPSolver:
 		foundTour = False
 		count = 0
 		solution = None
+		# Add tracker for bestSolution
+		bestSolution = None
 		start_time = time.time()
-		if startCity == None:
-			startCity = cities[0]
+
+		# Adding outer for loop to iterate through all cities as startCity
+		for startCity in cities:
+			# Deleted previous startCity initialization
 		
-		# Time: O(x*n**2)
-		while not foundTour and time.time() - start_time < time_allowance:
-			unvisitedCitiesSet = set(cities)
-			route = []
-			currentCity = startCity
+			# Time: O(x*n**2)
+			while not foundTour and time.time() - start_time < time_allowance:
+				unvisitedCitiesSet = set(cities)
+				route = []
+				currentCity = startCity
 
-			# Build the route greedily, Time: O(n**2)
-			for _ in range(len(cities)):
-				greedyCost, nextCity = None, None
-				# Iterate to find the smallest unvisited edge, Time: O(n)
-				for unvisitedCity in unvisitedCitiesSet:
-					cost = currentCity.costTo(unvisitedCity)
-					# Save the smallest city (or any city, if none have been visited)
-					if greedyCost == None or cost < greedyCost:
-						greedyCost, nextCity = cost, unvisitedCity
+				# Build the route greedily, Time: O(n**2)
+				for _ in range(len(cities)):
+					greedyCost, nextCity = None, None
+					# Iterate to find the smallest unvisited edge, Time: O(n)
+					for unvisitedCity in unvisitedCitiesSet:
+						cost = currentCity.costTo(unvisitedCity)
+						# Save the smallest city (or any city, if none have been visited)
+						if greedyCost == None or cost < greedyCost:
+							greedyCost, nextCity = cost, unvisitedCity
 
-				# Visit the smallest edge, Time: O(1)
-				if nextCity != None:
-					unvisitedCitiesSet.remove(nextCity)
-					route.append(nextCity)
-					currentCity = nextCity
-				else:
-					raise Exception("Unable to visit any city!!")
-			
-			solution = TSPSolution(route)
-			count += 1
-			if solution.cost < np.inf:
-				# Found a valid route
-				foundTour = True
-			else:
-				# Choose a new random city as the start city and try again
-				startCity = random.choice(cities)
+					# Visit the smallest edge, Time: O(1)
+					if nextCity != None:
+						unvisitedCitiesSet.remove(nextCity)
+						route.append(nextCity)
+						currentCity = nextCity
+					else:
+						raise Exception("Unable to visit any city!!")
+				
+				solution = TSPSolution(route)
+				count += 1
+				if solution.cost < np.inf:
+					# Found a valid route
+					foundTour = True
+
+					# Add logic for tracking bssf
+					if bestSolution == None:
+						bestSolution = solution
+					elif solution.cost < bestSolution.cost: 
+						bestSolution = solution
+
+				# Removed old startCity changer
 
 		# Return results
 		end_time = time.time()
-		results['cost'] = solution.cost if foundTour else math.inf
+		# Change to bestSolution
+		results['cost'] = bestSolution.cost if foundTour else math.inf
 		results['time'] = end_time - start_time
 		results['count'] = count
-		results['solution'] = solution
+		results['solution'] = bestSolution
 		results['max'], results['total'], results['pruned'] = None, None, None
 		return results
 	
