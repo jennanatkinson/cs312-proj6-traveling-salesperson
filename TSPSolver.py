@@ -16,7 +16,7 @@ import numpy as np
 from TSPClasses import *
 import heapq
 import itertools
-
+import FancyAlgo
 
 
 class TSPSolver:
@@ -163,7 +163,7 @@ class TSPSolver:
 		
 	def fancy( self,time_allowance=60.0 ):
 		cities = self._scenario.getCities()
-		algo = fancy.CheapestInsertion(cities)
+		algo = FancyAlgo.CheapestInsertion(cities)
 		return algo.solve(time_allowance)
 		
 
