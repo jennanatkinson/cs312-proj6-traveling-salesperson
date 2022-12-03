@@ -162,7 +162,9 @@ class TSPSolver:
 	'''
 		
 	def fancy( self,time_allowance=60.0 ):
-		pass
+		cities = self._scenario.getCities()
+		algo = fancy.CheapestInsertion(cities)
+		return algo.solve(time_allowance)
 		
 
 
