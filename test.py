@@ -26,7 +26,6 @@ def test_should_solve_easy_small_greedy():
 
   results = w.solver.greedy(max_time)
 
-  assert(results['cost'] != math.inf)
   assert(results['cost'] == 4159)
   assert(results['time'] < 60)
   assert(results['count'] == 3)
