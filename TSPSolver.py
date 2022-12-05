@@ -60,7 +60,7 @@ class TSPSolver:
 		results['cost'] = bssf.cost if foundTour else math.inf
 		results['time'] = end_time - start_time
 		results['count'] = count
-		results['soln'] = bssf
+		results['solution'] = bssf
 		results['max'] = None
 		results['total'] = None
 		results['pruned'] = None
@@ -139,7 +139,7 @@ class TSPSolver:
 		results['cost'] = bestSolution.cost if foundTour else math.inf
 		results['time'] = end_time - start_time
 		results['count'] = count
-		results['soln'] = bestSolution
+		results['solution'] = bestSolution
 		results['max'], results['total'], results['pruned'] = None, None, None
 		return results
 	

@@ -309,7 +309,7 @@ class Proj5GUI( QMainWindow ):
 			self.numSolutions.setText( '{}'.format(results['count']) )
 			self.tourCost.setText( '{}'.format(results['cost']) )
 			self.solvedIn.setText( '{:6.6f} seconds'.format(results['time']) )
-			self._solution = results['soln']
+			self._solution = results['solution']
 			if 'max' in results.keys():
 				self.maxQSize.setText( '{}'.format(results['max']))
 			if 'total' in results.keys():
