@@ -81,7 +81,6 @@ class TSPSolver:
 		algorithm</returns> 
 	'''
 
-# TODO: revise to try every city as the "start city" and take the best
 	# Returns the first greedy solution found, Time: O(x*n**2)
 	def greedy(self, time_allowance=60.0, startCity=None):
 		# Setup objects
@@ -90,12 +89,18 @@ class TSPSolver:
 		foundTour = False
 		count = 0
 		solution = None
+		# Add tracker for bestSolution
+		bestSolution = None
 		start_time = time.time()
-		if startCity == None:
-			startCity = cities[0]
-		
-		# Time: O(x*n**2)
-		while not foundTour and time.time() - start_time < time_allowance:
+
+		# Adding outer for loop to iterate through all cities as startCity
+		# O(n**3)
+		for startCity in cities:
+			# Deleted previous startCity initialization
+			# Add another timer check
+			if time.time() - start_time >= time_allowance:
+				break
+			# No need for while loop anymore, we either find a solution or we don't
 			unvisitedCitiesSet = set(cities)
 			route = []
 			currentCity = startCity
@@ -119,20 +124,24 @@ class TSPSolver:
 					raise Exception("Unable to visit any city!!")
 			
 			solution = TSPSolution(route)
-			count += 1
-			if solution.cost < np.inf:
+			
+			if solution.cost < math.inf:
 				# Found a valid route
 				foundTour = True
-			else:
-				# Choose a new random city as the start city and try again
-				startCity = random.choice(cities)
+				# Add logic for tracking bssf
+				if bestSolution == None or solution.cost < bestSolution.cost: 
+					count += 1
+					bestSolution = solution
+
+				# Removed old startCity changer
 
 		# Return results
 		end_time = time.time()
-		results['cost'] = solution.cost if foundTour else math.inf
+		# Change to bestSolution
+		results['cost'] = bestSolution.cost if foundTour else math.inf
 		results['time'] = end_time - start_time
 		results['count'] = count
-		results['solution'] = solution
+		results['soln'] = bestSolution
 		results['max'], results['total'], results['pruned'] = None, None, None
 		return results
 	
