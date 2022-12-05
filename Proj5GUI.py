@@ -208,7 +208,8 @@ class Proj5GUI( QMainWindow ):
 
 
 	   
-	def newPoints(self, seed:int=None):
+	def newPoints(self, size:int=None, seed:int=None):
+		sizeParam:int = size if size != None else int(self.size.text())
 		seedParam:int = seed if seed != None else int(self.curSeed.text())
 		# TODO - ERROR CHECKING!!!!
 		random.seed( seedParam )
@@ -217,7 +218,7 @@ class Proj5GUI( QMainWindow ):
 		RANGE = self.data_range
 		xr = self.data_range['x']
 		yr = self.data_range['y']
-		npoints = int(self.size.text())
+		npoints = sizeParam
 		while len(ptlist) < npoints:
 			x = random.uniform(0.0,1.0)
 			y = random.uniform(0.0,1.0)
@@ -232,7 +233,7 @@ class Proj5GUI( QMainWindow ):
 		seedParam:str = seed if seed != None else self.curSeed.text()
 		diffParam:str = diff if diff != None else self.diffDropDown.currentText()
 
-		points = self.newPoints(seed=int(seedParam)) # uses current rand seed
+		points = self.newPoints(size=int(sizeParam), seed=int(seedParam)) # uses current rand seed
 		self._scenario = Scenario( city_locations=points, difficulty=diffParam, rand_seed=int(seedParam) )
 
 		self.genParams = {'size':sizeParam,'seed':seedParam,'diff':diffParam}
