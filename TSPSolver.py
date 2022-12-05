@@ -94,6 +94,10 @@ class TSPSolver:
 		# Adding outer for loop to iterate through all cities as startCity
 		for startCity in cities:
 			# Deleted previous startCity initialization
+
+			# Add another timer check
+			if time.time() - start_time >= time_allowance:
+				break
 		
 			# Time: O(x*n**2)
 			while not foundTour and time.time() - start_time < time_allowance:
