@@ -8,14 +8,9 @@ elif PYQT_VER == 'PYQT4':
 else:
 	raise Exception('Unsupported Version of PyQt: {}'.format(PYQT_VER))
 
-
-
-
 import time
 import numpy as np
 from TSPClasses import *
-import heapq
-import itertools
 import FancyAlgo
 
 
@@ -175,6 +170,3 @@ class TSPSolver:
 		algo = FancyAlgo.CheapestInsertion(cities)
 		return algo.solve(time_allowance)
 		
-
-
-
