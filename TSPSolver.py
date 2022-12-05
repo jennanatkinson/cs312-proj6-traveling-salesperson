@@ -97,11 +97,13 @@ class TSPSolver:
 				break
 			# No need for while loop anymore, we either find a solution or we don't
 			unvisitedCitiesSet = set(cities)
-			route = []
+			unvisitedCitiesSet.remove(startCity)
+			route = [startCity]
 			currentCity = startCity
 
 			# Build the route greedily, Time: O(n**2)
-			for _ in range(len(cities)):
+			# Stops just before revisiting the start city
+			for _ in range(len(cities)-1):
 				greedyCost, nextCity = None, None
 				# Iterate to find the smallest unvisited edge, Time: O(n)
 				for unvisitedCity in unvisitedCitiesSet:
@@ -118,17 +120,16 @@ class TSPSolver:
 				else:
 					raise Exception("Unable to visit any city!!")
 			
+			# Will see if the last city in the route can visit the start again
 			solution = TSPSolution(route)
 			
 			if solution.cost < math.inf:
 				# Found a valid route
 				foundTour = True
+				count += 1
 				# Add logic for tracking bssf
 				if bestSolution == None or solution.cost < bestSolution.cost: 
-					count += 1
 					bestSolution = solution
-
-				# Removed old startCity changer
 
 		# Return results
 		end_time = time.time()
