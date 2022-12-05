@@ -123,7 +123,7 @@ class TSPSolver:
 			
 			solution = TSPSolution(route)
 			
-			if solution.cost < np.inf:
+			if solution.cost < math.inf:
 				# Found a valid route
 				foundTour = True
 				# Add logic for tracking bssf
@@ -139,7 +139,7 @@ class TSPSolver:
 		results['cost'] = bestSolution.cost if foundTour else math.inf
 		results['time'] = end_time - start_time
 		results['count'] = count
-		results['solution'] = bestSolution
+		results['soln'] = bestSolution
 		results['max'], results['total'], results['pruned'] = None, None, None
 		return results
 	
