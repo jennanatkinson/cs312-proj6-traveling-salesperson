@@ -92,49 +92,44 @@ class TSPSolver:
 		start_time = time.time()
 
 		# Adding outer for loop to iterate through all cities as startCity
+		# O(n**3)
 		for startCity in cities:
 			# Deleted previous startCity initialization
-
 			# Add another timer check
 			if time.time() - start_time >= time_allowance:
 				break
-		
-			# Time: O(x*n**2)
-			while not foundTour and time.time() - start_time < time_allowance:
-				unvisitedCitiesSet = set(cities)
-				route = []
-				currentCity = startCity
+			# No need for while loop anymore, we either find a solution or we don't
+			unvisitedCitiesSet = set(cities)
+			route = []
+			currentCity = startCity
 
-				# Build the route greedily, Time: O(n**2)
-				for _ in range(len(cities)):
-					greedyCost, nextCity = None, None
-					# Iterate to find the smallest unvisited edge, Time: O(n)
-					for unvisitedCity in unvisitedCitiesSet:
-						cost = currentCity.costTo(unvisitedCity)
-						# Save the smallest city (or any city, if none have been visited)
-						if greedyCost == None or cost < greedyCost:
-							greedyCost, nextCity = cost, unvisitedCity
+			# Build the route greedily, Time: O(n**2)
+			for _ in range(len(cities)):
+				greedyCost, nextCity = None, None
+				# Iterate to find the smallest unvisited edge, Time: O(n)
+				for unvisitedCity in unvisitedCitiesSet:
+					cost = currentCity.costTo(unvisitedCity)
+					# Save the smallest city (or any city, if none have been visited)
+					if greedyCost == None or cost < greedyCost:
+						greedyCost, nextCity = cost, unvisitedCity
 
-					# Visit the smallest edge, Time: O(1)
-					if nextCity != None:
-						unvisitedCitiesSet.remove(nextCity)
-						route.append(nextCity)
-						currentCity = nextCity
-					else:
-						raise Exception("Unable to visit any city!!")
-				
-				solution = TSPSolution(route)
-				
-				if solution.cost < np.inf:
-					# Found a valid route
-					foundTour = True
+				# Visit the smallest edge, Time: O(1)
+				if nextCity != None:
+					unvisitedCitiesSet.remove(nextCity)
+					route.append(nextCity)
+					currentCity = nextCity
+				else:
+					raise Exception("Unable to visit any city!!")
+			
+			solution = TSPSolution(route)
+			
+			if solution.cost < np.inf:
+				# Found a valid route
+				foundTour = True
+				# Add logic for tracking bssf
+				if bestSolution == None or solution.cost < bestSolution.cost: 
 					count += 1
-
-					# Add logic for tracking bssf
-					if bestSolution == None:
-						bestSolution = solution
-					elif solution.cost < bestSolution.cost: 
-						bestSolution = solution
+					bestSolution = solution
 
 				# Removed old startCity changer
 
