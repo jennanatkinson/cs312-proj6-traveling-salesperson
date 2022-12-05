@@ -208,10 +208,10 @@ class Proj5GUI( QMainWindow ):
 
 
 	   
-	def newPoints(self):		
+	def newPoints(self, seed:int=None):
+		seedParam:int = seed if seed != None else int(self.curSeed.text())
 		# TODO - ERROR CHECKING!!!!
-		seed = int(self.curSeed.text())
-		random.seed( seed )
+		random.seed( seedParam )
 
 		ptlist = []
 		RANGE = self.data_range
@@ -227,26 +227,26 @@ class Proj5GUI( QMainWindow ):
 				ptlist.append( QPointF(xval,yval) )
 		return ptlist
 
-	def generateNetwork(self):
-		points = self.newPoints() # uses current rand seed
-		diff = self.diffDropDown.currentText()
-		rand_seed = int(self.curSeed.text())
-		self._scenario = Scenario( city_locations=points, difficulty=diff, rand_seed=rand_seed )
+	def generateNetwork(self, size:str=None, seed:str=None, diff:str=None):
+		sizeParam = size if size != None else self.size.text()
+		seedParam = seed if seed != None else self.curSeed.text()
+		diffParam = diff if diff != None else self.diffDropDown.currentText()
 
-		self.genParams = {'size':self.size.text(),'seed':self.curSeed.text(),'diff':diff}
+		points = self.newPoints() # uses current rand seed
+		self._scenario = Scenario( city_locations=points, difficulty=diffParam, rand_seed=int(seedParam) )
+
+		self.genParams = {'size':sizeParam,'seed':seedParam,'diff':diffParam}
 		self.view.clearEdges()
 		self.view.clearPoints()
 
-		self.addCities()
-
-
+		self.addCities(seed=seedParam)
 
 	def addCities( self ):
 		cities = self._scenario.getCities()
 		self.view.clearEdges()
 		for city in cities:
-		   self.view.addLabel( QPointF(city._x, city._y), city._name, \
-							   labelColor=(128,128,128), xoffset=10.0 )
+			self.view.addLabel( QPointF(city._x, city._y), city._name, \
+				labelColor=(128,128,128), xoffset=10.0 )
 
 	def generateClicked(self):
 		self.generateNetwork()
