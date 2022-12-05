@@ -228,18 +228,18 @@ class Proj5GUI( QMainWindow ):
 		return ptlist
 
 	def generateNetwork(self, size:str=None, seed:str=None, diff:str=None):
-		sizeParam = size if size != None else self.size.text()
-		seedParam = seed if seed != None else self.curSeed.text()
-		diffParam = diff if diff != None else self.diffDropDown.currentText()
+		sizeParam:str = size if size != None else self.size.text()
+		seedParam:str = seed if seed != None else self.curSeed.text()
+		diffParam:str = diff if diff != None else self.diffDropDown.currentText()
 
-		points = self.newPoints() # uses current rand seed
+		points = self.newPoints(seed=int(seedParam)) # uses current rand seed
 		self._scenario = Scenario( city_locations=points, difficulty=diffParam, rand_seed=int(seedParam) )
 
 		self.genParams = {'size':sizeParam,'seed':seedParam,'diff':diffParam}
 		self.view.clearEdges()
 		self.view.clearPoints()
 
-		self.addCities(seed=seedParam)
+		self.addCities()
 
 	def addCities( self ):
 		cities = self._scenario.getCities()
