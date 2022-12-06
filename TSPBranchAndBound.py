@@ -30,7 +30,7 @@ class BranchAndBound:
     cities = self._scenario.getCities() # O(1)
     ncities = len(cities) # O(1)
     ## Get initial BSSF using defaultRandomTour
-    bssf = self.defaultRandomTour(time_allowance)['soln'] # O(n)
+    bssf = self.defaultRandomTour(time_allowance)['solution'] # O(n)
     start_time = time.time() # O(1)
 
     redCostMatrix = {}
@@ -51,13 +51,13 @@ class BranchAndBound:
     ## Initialize a heap
     heapq.heapify(heap) # O(1)
     ## Pass to a prune and expand function
-    soln, maxSize, totalStates, prunedStates, bssfUpdates = BranchAndBound.findBSSF(self, heap, bssf, start_time, time_allowance) # n^2 < O() < n! OR 60 seconds
+    solution, maxSize, totalStates, prunedStates, bssfUpdates = BranchAndBound.findBSSF(self, heap, bssf, start_time, time_allowance) # n^2 < O() < n! OR 60 seconds
     
     end_time = time.time()
-    results['cost'] = soln.cost
+    results['cost'] = solution.cost
     results['time'] = end_time - start_time
     results['count'] = bssfUpdates
-    results['soln'] = soln
+    results['solution'] = solution
     results['max'] = maxSize
     results['total'] = totalStates
     results['pruned'] = prunedStates

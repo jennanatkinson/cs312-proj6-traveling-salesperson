@@ -110,9 +110,9 @@ class PointLineView( QWidget ):
 		h = self.height()
 		w2h_desired_ratio = (xr[1]-xr[0])/(yr[1]-yr[0])
 		if w / h < w2h_desired_ratio:
-			 scale = w / (xr[1]-xr[0])
+			scale = w / (xr[1]-xr[0])
 		else:
-			 scale = h / (yr[1]-yr[0])
+			scale = h / (yr[1]-yr[0])
 
 		tform = QTransform()
 		tform.translate(self.width()/2.0,self.height()/2.0)
@@ -208,16 +208,17 @@ class Proj5GUI( QMainWindow ):
 
 
 	   
-	def newPoints(self):		
+	def newPoints(self, size:int=None, seed:int=None):
+		sizeParam:int = size if size != None else int(self.size.text())
+		seedParam:int = seed if seed != None else int(self.curSeed.text())
 		# TODO - ERROR CHECKING!!!!
-		seed = int(self.curSeed.text())
-		random.seed( seed )
+		random.seed( seedParam )
 
 		ptlist = []
 		RANGE = self.data_range
 		xr = self.data_range['x']
 		yr = self.data_range['y']
-		npoints = int(self.size.text())
+		npoints = sizeParam
 		while len(ptlist) < npoints:
 			x = random.uniform(0.0,1.0)
 			y = random.uniform(0.0,1.0)
@@ -227,26 +228,26 @@ class Proj5GUI( QMainWindow ):
 				ptlist.append( QPointF(xval,yval) )
 		return ptlist
 
-	def generateNetwork(self):
-		points = self.newPoints() # uses current rand seed
-		diff = self.diffDropDown.currentText()
-		rand_seed = int(self.curSeed.text())
-		self._scenario = Scenario( city_locations=points, difficulty=diff, rand_seed=rand_seed )
+	def generateNetwork(self, size:str=None, seed:str=None, diff:str=None):
+		sizeParam:str = size if size != None else self.size.text()
+		seedParam:str = seed if seed != None else self.curSeed.text()
+		diffParam:str = diff if diff != None else self.diffDropDown.currentText()
 
-		self.genParams = {'size':self.size.text(),'seed':self.curSeed.text(),'diff':diff}
+		points = self.newPoints(size=int(sizeParam), seed=int(seedParam)) # uses current rand seed
+		self._scenario = Scenario( city_locations=points, difficulty=diffParam, rand_seed=int(seedParam) )
+
+		self.genParams = {'size':sizeParam,'seed':seedParam,'diff':diffParam}
 		self.view.clearEdges()
 		self.view.clearPoints()
 
 		self.addCities()
 
-
-
 	def addCities( self ):
 		cities = self._scenario.getCities()
 		self.view.clearEdges()
 		for city in cities:
-		   self.view.addLabel( QPointF(city._x, city._y), city._name, \
-							   labelColor=(128,128,128), xoffset=10.0 )
+			self.view.addLabel( QPointF(city._x, city._y), city._name, \
+				labelColor=(128,128,128), xoffset=10.0 )
 
 	def generateClicked(self):
 		self.generateNetwork()
@@ -309,7 +310,7 @@ class Proj5GUI( QMainWindow ):
 			self.numSolutions.setText( '{}'.format(results['count']) )
 			self.tourCost.setText( '{}'.format(results['cost']) )
 			self.solvedIn.setText( '{:6.6f} seconds'.format(results['time']) )
-			self._solution = results['soln']
+			self._solution = results['solution']
 			if 'max' in results.keys():
 				self.maxQSize.setText( '{}'.format(results['max']))
 			if 'total' in results.keys():
