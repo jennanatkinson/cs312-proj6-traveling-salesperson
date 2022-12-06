@@ -8,14 +8,10 @@ elif PYQT_VER == 'PYQT4':
 else:
 	raise Exception('Unsupported Version of PyQt: {}'.format(PYQT_VER))
 
-
-
-
 import time
 import numpy as np
 from TSPClasses import *
-
-
+from TSPBranchAndBound import *
 
 class TSPSolver:
 	def __init__( self, gui_view ):
@@ -27,7 +23,7 @@ class TSPSolver:
 
 	''' <summary>
 		This is the entry point for the default solver
-		which just finds a valid random tour.  Note this could be used to find your
+		which just finds a valid random tour. Note this could be used to find your
 		initial BSSF.
 		</summary>
 		<returns>results dictionary for GUI that contains three ints: cost of solution, 
@@ -70,7 +66,7 @@ class TSPSolver:
 	''' <summary>
 		This is the entry point for the greedy solver, which you must implement for 
 		the group project (but it is probably a good idea to just do it for the branch-and
-		bound project as a way to get your feet wet).  Note this could be used to find your
+		bound project as a way to get your feet wet). Note this could be used to find your
 		initial BSSF.
 		</summary>
 		<returns>results dictionary for GUI that contains three ints: cost of best solution, 
@@ -156,7 +152,8 @@ class TSPSolver:
 	'''
 		
 	def branchAndBound( self, time_allowance=60.0 ):
-		pass
+		results = BranchAndBound.solve(self, time_allowance)
+		return results
 
 
 
@@ -165,7 +162,7 @@ class TSPSolver:
 		</summary>
 		<returns>results dictionary for GUI that contains three ints: cost of best solution, 
 		time spent to find best solution, total number of solutions found during search, the 
-		best solution found.  You may use the other three field however you like.
+		best solution found. You may use the other three field however you like.
 		algorithm</returns> 
 	'''
 		
