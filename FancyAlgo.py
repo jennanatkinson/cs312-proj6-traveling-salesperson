@@ -89,7 +89,7 @@ class CheapestInsertion:
         else:
             self.results['cost'] = np.inf
         self.results['count'] = self.count
-        self.results['soln'] = self.bssf
+        self.results['solution'] = self.bssf
         return self.results
 
     # Fill in matrix with cost of each city to another city
