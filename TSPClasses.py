@@ -38,6 +38,17 @@ class TSPSolution:
 		elist.append( (self.route[-1], self.route[0], int(math.ceil(dist))) )
 		return elist
 
+	def __str__(self):
+		string = "TSPSolution{"
+		if len(self.route) != 0:
+			for city in self.route:
+				string += f"{city._name}->"
+		else:
+			string += "*empty*"
+		string = string[:-2]
+		string += f"}}, Cost: {self.cost}"
+		return string
+
 
 def nameForInt( num ):
 	if num == 0:
@@ -176,4 +187,3 @@ class City:
 
 
 		return int(math.ceil(cost * self.MAP_SCALE))
-
