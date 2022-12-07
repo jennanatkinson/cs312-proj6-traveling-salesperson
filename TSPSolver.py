@@ -175,6 +175,8 @@ class TSPSolver:
 		foundTour:bool = False
 		count:int = 0
 		bestSolution:TSPSolution = None
+		prunedStates:int = 0
+		totalStates:int = 0
 		start_time = time.time()
 
 		for startCity in np.random.permutation(cities):
@@ -182,10 +184,14 @@ class TSPSolver:
 			if time.time() - start_time >= time_allowance:
 				break
 
+			totalStates += 1
 			algo = CheapestInsertion(startCity, cities, cost_matrix)
-			solution:TSPSolution = algo.find_solution()
+			solution:TSPSolution = algo.find_solution(bestSolution.cost if foundTour else math.inf)
 
-			if solution.cost < math.inf:
+			if solution == None:
+				prunedStates += 1
+
+			if solution != None and solution.cost < math.inf:
 				# Found a valid route
 				foundTour = True
 				count += 1
@@ -199,7 +205,7 @@ class TSPSolver:
 		results['count'] = count
 		results['solution'] = bestSolution
 		results['max'] = None
-		results['total'] = None
-		results['pruned'] = None
+		results['total'] = totalStates
+		results['pruned'] = prunedStates
 		return results
 		
