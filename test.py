@@ -2,6 +2,7 @@ import math
 import signal
 import sys
 from Proj5GUI import Proj5GUI
+from TSPSolver import TSPSolver
 
 from which_pyqt import PYQT_VER
 if PYQT_VER == 'PYQT5':
@@ -14,71 +15,44 @@ elif PYQT_VER == 'PYQT4':
 else:
 	raise Exception('Unsupported Version of PyQt: {}'.format(PYQT_VER))
 
-
-def test_should_solve_easy_small_greedy():
+# Test standard asserts for an algorithm and given inputs
+def run_test(testFunc, size:int, seed:int, difficulty:str, timeLimit:int, expectedCost:int):
   signal.signal(signal.SIGINT, signal.SIG_DFL)
 
   app = QApplication(sys.argv)
   w = Proj5GUI()
-  w.generateNetwork(size='3', seed='20', diff='Easy')
+  w.generateNetwork(size=str(size), seed=str(seed), diff=difficulty)
   w.solver.setupWithScenario(w._scenario)
-  max_time = float(60)
+  max_time = float(timeLimit)
 
-  results = w.solver.greedy(max_time)
+  results = testFunc(w.solver, max_time)
 
-  assert(results['cost'] == 4159)
-  assert(results['time'] < 60)
-  assert(results['count'] == 3)
+  assert(results['cost'] <= expectedCost)
   assert(results['solution'] != None)
+  assert(len(results['solution'].route) == size)
 
-def test_should_solve_easy_three_cheapest_insertion():
-  signal.signal(signal.SIGINT, signal.SIG_DFL)
+  # Assert that all items are only in the city once
+  citySet = set()
+  for city in results['solution'].route:
+    assert(not (city in citySet))
+    citySet.add(city)
 
-  app = QApplication(sys.argv)
-  w = Proj5GUI()
-  w.generateNetwork(size='3', seed='20', diff='Easy')
-  w.solver.setupWithScenario(w._scenario)
-  max_time = float(60)
+def test_should_solve_greedy_easy_three():
+  run_test(TSPSolver.greedy, 3, 20, "Easy", 60, 4159)
 
-  results = w.solver.fancy(max_time)
+# NOTE: For fancy, all the cost numbers are the optimal greedy solution
+# Our algorithm should find the optimal greedy, if not better
+def test_should_solve_fancy_easy_three():
+  run_test(TSPSolver.fancy, 3, 20, "Easy", 60, 4159)
 
-  assert(results['cost'] == 4159)
-  assert(results['time'] < 60)
-  assert(results['count'] == 3) #
-  assert(results['solution'] != None)
-  assert(len(results['solution'].route) == 3)
+def test_should_solve_fancy_easy_ten():
+  run_test(TSPSolver.fancy, 10, 431, "Easy", 60, 7242)
 
-def test_should_solve_easy_ten_cheapest_insertion():
-  signal.signal(signal.SIGINT, signal.SIG_DFL)
+def test_should_solve_fancy_normal_ten():
+  run_test(TSPSolver.fancy, 10, 850, "Normal", 60, 8247)
 
-  app = QApplication(sys.argv)
-  w = Proj5GUI()
-  w.generateNetwork(size='10', seed='431', diff='Easy')
-  w.solver.setupWithScenario(w._scenario)
-  max_time = float(60)
+def test_should_solve_fancy_hard_det_three():
+  run_test(TSPSolver.fancy, 3, 969, "Hard (Deterministic)", 60, 3880)
 
-  results = w.solver.fancy(max_time)
-
-  assert(results['cost'] <= 7242) # Optimal solution that greedy found
-  assert(results['time'] < 60)
-  assert(results['count'] <= 10) # Find at most 10 solutions
-  assert(results['solution'] != None)
-  assert(len(results['solution'].route) == 10)
-
-
-def test_should_solve_normal_ten_cheapest_insertion():
-  signal.signal(signal.SIGINT, signal.SIG_DFL)
-
-  app = QApplication(sys.argv)
-  w = Proj5GUI()
-  w.generateNetwork(size='10', seed='850', diff='Normal')
-  w.solver.setupWithScenario(w._scenario)
-  max_time = float(60)
-
-  results = w.solver.fancy(max_time)
-
-  assert(results['cost'] <= 8247) # Optimal solution that greedy found
-  assert(results['time'] < 60)
-  assert(results['count'] <= 10) # Find at most 10 solutions
-  assert(results['solution'] != None)
-  assert(len(results['solution'].route) == 10)
+def test_should_solve_fancy_hard_det_ten():
+  run_test(TSPSolver.fancy, 10, 135, "Hard (Deterministic)", 60, 7483)
