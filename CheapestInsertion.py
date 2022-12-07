@@ -67,14 +67,14 @@ class CheapestInsertion:
 		while city_in_route != None:
 			for unvisited_city in self.unvisited_cities_set:
 				
-				# Calculate option of insert before start of tour
-				if city_in_route.prev == None:
-					connect_cost = self.cost_matrix[unvisited_city._index][city_in_route.value._index]
-					if connect_cost < min_insert_cost:
-						min_insert_cost = connect_cost
-						start_insert = None
-						city_obj_to_insert = unvisited_city
-						end_insert = city_in_route
+				# # Calculate option of insert before start of tour
+				# if city_in_route.prev == None:
+				# 	connect_cost = self.cost_matrix[unvisited_city._index][city_in_route.value._index]
+				# 	if connect_cost < min_insert_cost:
+				# 		min_insert_cost = connect_cost
+				# 		start_insert = None
+				# 		city_obj_to_insert = unvisited_city
+				# 		end_insert = city_in_route
 				
 				# Calculate option of insert after end of tour
 				if city_in_route.next == None:
@@ -117,8 +117,8 @@ class CheapestInsertion:
 				self.cost_so_far -= self.cost_matrix[start_insert.value._index][end_insert.value._index]
 
 			# If we are adding to the start of the list, update root
-			if start_insert == None:
-				self.linked_route_root = insert_link_node
+			# if start_insert == None:
+			# 	self.linked_route_root = insert_link_node
 
 		return min_insert_cost
 
