@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from CheapestInsertion import CheapestInsertion, init_cost_matrix
 from which_pyqt import PYQT_VER
 if PYQT_VER == 'PYQT5':
 	from PyQt5.QtCore import QLineF, QPointF
@@ -12,6 +13,7 @@ import time
 import numpy as np
 from TSPClasses import *
 from TSPBranchAndBound import *
+
 
 class TSPSolver:
 	def __init__( self, gui_view ):
@@ -87,11 +89,9 @@ class TSPSolver:
 		bestSolution = None
 		start_time = time.time()
 
-		# Adding outer for loop to iterate through all cities as startCity
-		# O(n**3)
+		# Adding outer for loop to iterate through all cities as startCity, Time: O(n**3)
 		for startCity in cities:
-			# Deleted previous startCity initialization
-			# Add another timer check
+			# Check Time
 			if time.time() - start_time >= time_allowance:
 				break
 			# No need for while loop anymore, we either find a solution or we don't
@@ -137,6 +137,7 @@ class TSPSolver:
 		results['time'] = end_time - start_time
 		results['count'] = count
 		results['solution'] = bestSolution
+		print(bestSolution)
 		results['max'], results['total'], results['pruned'] = None, None, None
 		return results
 	
@@ -162,13 +163,53 @@ class TSPSolver:
 		</summary>
 		<returns>results dictionary for GUI that contains three ints: cost of best solution, 
 		time spent to find best solution, total number of solutions found during search, the 
-		best solution found. You may use the other three field however you like.
-		algorithm</returns> 
-	'''
+		best solution found.  You may use the other three field however you like.
+    algorithm</returns> 
+  '''
+
+	def fancy(self, time_allowance=60.0):
+		# Setup objects
+		results:dict = {}
+		cities:list[City] = self._scenario.getCities()
+		cost_matrix:list[list[City]] = init_cost_matrix(cities)
+		foundTour:bool = False
+		count:int = 0
+		bestSolution:TSPSolution = None
+		prunedStates:int = 0
+		totalStates:int = 0
+		start_time = time.time()
+
+		for startCity in np.random.permutation(cities):
+			# Timer check
+			# if time.time() - start_time >= time_allowance:
+			# 	break
+
+			totalStates += 1
+			algo = CheapestInsertion(startCity, cities, cost_matrix)
+			solution:TSPSolution = algo.find_solution(bestSolution.cost if foundTour else math.inf)
+
+			if solution == None:
+				prunedStates += 1
+
+			if solution != None and solution.cost < math.inf:
+				# print(solution)
+				# Found a valid route
+				foundTour = True
+				count += 1
+				# Add logic for tracking bssf
+				if bestSolution == None or solution.cost < bestSolution.cost: 
+					bestSolution = solution
+			# else:
+			# 	print("inf")
+
+		end_time = time.time()
+		results['cost'] = bestSolution.cost if foundTour else math.inf
+		results['time'] = end_time - start_time
+		results['count'] = count
+		results['solution'] = bestSolution
+		print(bestSolution)
+		results['max'] = None
+		results['total'] = totalStates
+		results['pruned'] = prunedStates
+		return results
 		
-	def fancy( self,time_allowance=60.0 ):
-		pass
-		
-
-
-
