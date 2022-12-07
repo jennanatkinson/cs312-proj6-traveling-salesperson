@@ -63,7 +63,7 @@ class CheapestInsertion:
 		min_insert_cost = np.inf
 		city_in_route:LinkedCityNode = self.linked_route_root # start at beginning of route
 
-		# Find cheapest city and way to insert
+		# Find cheapest city and way to insert in the route
 		while city_in_route != None:
 			for unvisited_city in self.unvisited_cities_set:
 				
@@ -97,11 +97,13 @@ class CheapestInsertion:
 			
 			city_in_route = city_in_route.next
 		
+		# If a city is able to be inserted somewhere in the route,
 		if city_obj_to_insert != None:
+			
 			# Remove city from unvisited
 			self.unvisited_cities_set.remove(city_obj_to_insert)
 
-			# Add city to linked list and update cost
+			# Add city to linked list and update running cost
 			insert_link_node = LinkedCityNode(city_obj_to_insert, prevCity=start_insert, nextCity=end_insert)
 			if start_insert != None:
 				start_insert.next = insert_link_node
