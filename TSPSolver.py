@@ -13,7 +13,6 @@ import time
 import numpy as np
 from TSPClasses import *
 from TSPBranchAndBound import *
-import FancyAlgo
 
 
 class TSPSolver:
@@ -138,6 +137,7 @@ class TSPSolver:
 		results['time'] = end_time - start_time
 		results['count'] = count
 		results['solution'] = bestSolution
+		print(bestSolution)
 		results['max'], results['total'], results['pruned'] = None, None, None
 		return results
 	
@@ -181,8 +181,8 @@ class TSPSolver:
 
 		for startCity in np.random.permutation(cities):
 			# Timer check
-			if time.time() - start_time >= time_allowance:
-				break
+			# if time.time() - start_time >= time_allowance:
+			# 	break
 
 			totalStates += 1
 			algo = CheapestInsertion(startCity, cities, cost_matrix)
@@ -192,18 +192,22 @@ class TSPSolver:
 				prunedStates += 1
 
 			if solution != None and solution.cost < math.inf:
+				# print(solution)
 				# Found a valid route
 				foundTour = True
 				count += 1
 				# Add logic for tracking bssf
 				if bestSolution == None or solution.cost < bestSolution.cost: 
 					bestSolution = solution
+			# else:
+			# 	print("inf")
 
 		end_time = time.time()
 		results['cost'] = bestSolution.cost if foundTour else math.inf
 		results['time'] = end_time - start_time
 		results['count'] = count
 		results['solution'] = bestSolution
+		print(bestSolution)
 		results['max'] = None
 		results['total'] = totalStates
 		results['pruned'] = prunedStates
